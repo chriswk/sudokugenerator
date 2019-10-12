@@ -2,7 +2,7 @@ package com.chriswk.sudoku
 
 data class SudokuCell(
     val idx: Int,
-    val value: Int = 0,
+    var value: Int = 0,
     val gridSide: Int = 9
 ) {
     fun coordFromIdx(idx: Int): Coord = Coord(x = idx / gridSide, y = idx % gridSide)

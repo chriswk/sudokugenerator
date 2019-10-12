@@ -39,6 +39,10 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
         return grid.firstOrNull { it.value == 0 }
     }
 
+    fun nextEmptyCell(cell: SudokuCell): SudokuCell? {
+        return cell.idx.until(grid.size).map { getCell(it) }.firstOrNull { it.value == 0 }
+    }
+
     override fun toString(): String {
         return GridConverter.toString(this)
     }
