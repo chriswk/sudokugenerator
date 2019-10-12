@@ -19,6 +19,5 @@ class SudokuSolverTest : StringSpec() {
             grid.firstEmptyCell() shouldBe null
             logger.info(grid.toString())
         }
-
     }
 }
