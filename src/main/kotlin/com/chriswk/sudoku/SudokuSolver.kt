@@ -23,7 +23,7 @@ class SudokuSolver(val random: Random = Random.Default, val values: IntArray = g
 val EMPTY: Int = 0
 
 fun generateRandomValues(random: Random): IntArray {
-    val list = mutableListOf(EMPTY, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+    val list = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
     list.shuffle(random)
     return list.toIntArray()
 }

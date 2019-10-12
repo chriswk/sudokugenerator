@@ -8,7 +8,7 @@ data class SudokuCell(
     fun coordFromIdx(idx: Int): Coord = Coord(x = idx / gridSide, y = idx % gridSide)
     fun idxFromCoord(c: Coord): Int = c.x * gridSide + c.y
     val coord: Coord = coordFromIdx(idx)
-    val validIdx: Boolean = idx in 0..(gridSide * gridSide)
+    val validIdx: Boolean = idx in 0 until gridSide * gridSide
     val validValue: Boolean = value in 0..gridSide
     val valid = validIdx && validValue
     val rowNeighbours: List<Int> = 0.until(gridSide).filter { it != coord.y }.map { Coord(coord.x, it) }.map { idxFromCoord(it) }
