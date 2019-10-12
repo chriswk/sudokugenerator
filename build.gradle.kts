@@ -9,6 +9,7 @@ plugins {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -16,6 +17,7 @@ dependencies {
     implementation("io.prometheus:simpleclient_hotspot:0.6.0")
     // Use the Kotlin JDK 8 standard library.
     implementation(kotlin("stdlib-jdk8"))
+    implementation("org.logevents:logevents:0.1.22")
     testImplementation(kotlin("test-junit5"))
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.5.2")

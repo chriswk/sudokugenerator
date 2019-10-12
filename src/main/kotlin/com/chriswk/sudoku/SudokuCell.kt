@@ -2,22 +2,28 @@ package com.chriswk.sudoku
 
 data class SudokuCell(
     val idx: Int,
-    val value: Int = 0
+    val value: Int = 0,
+    val gridSide: Int = 9
 ) {
-    fun coordFromIdx(idx: Int): Coord = Coord(x = idx / 9, y = idx % 9)
-    fun idxFromCoord(c: Coord): Int = c.x * 9 + c.y
+    fun coordFromIdx(idx: Int): Coord = Coord(x = idx / gridSide, y = idx % gridSide)
+    fun idxFromCoord(c: Coord): Int = c.x * gridSide + c.y
     val coord: Coord = coordFromIdx(idx)
-    val validIdx: Boolean = idx in 0..80
-    val validValue: Boolean = value in 0..9
+    val validIdx: Boolean = idx in 0..(gridSide * gridSide)
+    val validValue: Boolean = value in 0..gridSide
     val valid = validIdx && validValue
-    val rowNeighbours: List<Int> = 0.until(9).filter { it != coord.y }.map { Coord(coord.x, it) }.map { idxFromCoord(it) }
-    val columnNeighbours: List<Int> = 0.until(9).filter { it != coord.x }.map { Coord(it, coord.y) }.map { idxFromCoord(it) }
+    val rowNeighbours: List<Int> = 0.until(gridSide).filter { it != coord.y }.map { Coord(coord.x, it) }.map { idxFromCoord(it) }
+    val columnNeighbours: List<Int> = 0.until(gridSide).filter { it != coord.x }.map { Coord(it, coord.y) }.map { idxFromCoord(it) }
     fun boxCoords(): List<Coord> {
-        val boxMinX = (coord.x / 3) * 3
-        val boxMaxX = ((coord.x / 3) + 1) * 3
-        val boxMinY = (coord.y / 3) * 3
-        val boxMaxY = ((coord.y / 3) + 1) * 3
+        val gridSideSquareRoot = Math.sqrt(gridSide.toDouble()).toInt()
+        val boxMinX = (coord.x / gridSideSquareRoot) * gridSideSquareRoot
+        val boxMaxX = ((coord.x / gridSideSquareRoot) + 1) * gridSideSquareRoot
+        val boxMinY = (coord.y / gridSideSquareRoot) * gridSideSquareRoot
+        val boxMaxY = ((coord.y / gridSideSquareRoot) + 1) * gridSideSquareRoot
         return (boxMinX.until(boxMaxX)).flatMap { x -> (boxMinY.until(boxMaxY)).map { y -> Coord(x, y) } }.minus(coord)
+    }
+    fun nextCellIdx(): Int? = when (idx >= (gridSide * gridSide - 1)) {
+        true -> null
+        false -> idx + 1
     }
     fun boxNeighbours(): List<Int> {
         return boxCoords().map { idxFromCoord(it) }
