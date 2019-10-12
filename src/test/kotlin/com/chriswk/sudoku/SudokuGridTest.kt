@@ -1,6 +1,8 @@
 package com.chriswk.sudoku
 
 import io.kotlintest.matchers.string.shouldNotContain
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import kotlin.test.assertFailsWith
@@ -23,8 +25,31 @@ class SudokuGridTest : StringSpec() {
             }).firstEmptyCell()!!.coord shouldBe (Coord(0, 4))
         }
         "A too small intArray should cause require to fail" {
-            assertFailsWith<IllegalArgumentException>("Grid must be of size 81. it was 5") {
-                SudokuGrid.of(IntArray(5))
+            assertAll(Gen.choose(0, 80)) { size ->
+                assertFailsWith<IllegalArgumentException>("Grid must be of size 81. it was $size") {
+                    SudokuGrid.of(IntArray(size))
+                }
+            }
+        }
+        "A too large intArray should cause verify to fail" {
+            assertAll(Gen.choose(82, 5000)) { size ->
+                assertFailsWith<IllegalArgumentException>("Grid must be of size 81. it was $size") {
+                    SudokuGrid.of(IntArray(size))
+                }
+            }
+        }
+        "Too small values should cause verify to fail" {
+            assertAll(Gen.negativeIntegers()) { value ->
+                assertFailsWith<IllegalArgumentException>("Only valid values is 0 (to signify empty) to 9") {
+                    SudokuGrid.of(IntArray(81) { idx -> value })
+                }
+            }
+        }
+        "Too large values should cause verification of grid to fail" {
+            assertAll(Gen.choose(10, 100)) { value ->
+                assertFailsWith<IllegalArgumentException>("Only valid values is 0 (to signify empty) to 9") {
+                    SudokuGrid.of(IntArray(81) { idx -> value })
+                }
             }
         }
     }
