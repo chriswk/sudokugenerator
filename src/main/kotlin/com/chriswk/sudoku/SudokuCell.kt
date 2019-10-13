@@ -11,6 +11,7 @@ data class SudokuCell(
     val validIdx: Boolean = idx in 0 until gridSide * gridSide
     val validValue: Boolean = value in 0..gridSide
     val valid = validIdx && validValue
+    fun isEmpty() = value == 0
     val rowNeighbours: List<Int> = 0.until(gridSide).filter { it != coord.y }.map { Coord(coord.x, it) }.map { idxFromCoord(it) }
     val columnNeighbours: List<Int> = 0.until(gridSide).filter { it != coord.x }.map { Coord(it, coord.y) }.map { idxFromCoord(it) }
     fun boxCoords(): List<Coord> {
@@ -21,11 +22,10 @@ data class SudokuCell(
         val boxMaxY = ((coord.y / gridSideSquareRoot) + 1) * gridSideSquareRoot
         return (boxMinX.until(boxMaxX)).flatMap { x -> (boxMinY.until(boxMaxY)).map { y -> Coord(x, y) } }.minus(coord)
     }
+
     fun boxNeighbours(): List<Int> {
         return boxCoords().map { idxFromCoord(it) }
     }
 
     val neighbours = rowNeighbours union columnNeighbours union boxNeighbours()
 }
-
-data class Coord(val x: Int, val y: Int)

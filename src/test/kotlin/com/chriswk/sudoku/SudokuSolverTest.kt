@@ -11,17 +11,18 @@ class SudokuSolverTest : StringSpec() {
     companion object {
         val logger = LoggerFactory.getLogger(SudokuSolverTest::class.java)
     }
+
     init {
         "An empty table should find a solution" {
-            val grid = IntArray(81) { 0 }
-            var solved: IntArray? = null
+            val grid = SudokuGrid.emptyGrid()
+            var solved: SudokuGrid? = null
             val solver = SudokuSolver()
             val timeTaken = measureTimeMillis {
                 solved = solver.solve(grid)
             }
             solved shouldNotBe null
             logger.info("Took $timeTaken ms")
-            SudokuSolver.isPerfect(solved!!) shouldBe true
+            solved!!.isPerfect() shouldBe true
             logger.info(grid.toString())
         }
         "Should be able to solve all 500 puzzles" {
@@ -37,8 +38,8 @@ class SudokuSolverTest : StringSpec() {
             }.toList()
             val solver = SudokuSolver()
             forAll(puzzleToSolution) { (quiz, solution) ->
-                val ourSolution = solver.solve(grid = quiz.toIntArray())
-                solution.toIntArray().contentEquals(ourSolution)
+                val ourSolution = solver.solve(grid = quiz)
+                ourSolution.toString() shouldBe solution.toString()
             }
         }
     }

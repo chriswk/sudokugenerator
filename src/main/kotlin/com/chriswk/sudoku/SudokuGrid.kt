@@ -31,7 +31,7 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
     }
 
     fun isValid(): Boolean {
-        return grid.all { it.value == 0 || !it.neighbours.contains(it.value) }
+        return grid.all { it.isEmpty() || isValidValueForCell(it, it.value) }
     }
 
     fun logState() {
@@ -42,18 +42,24 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
     }
 
     fun getCell(idx: Int): SudokuCell = grid[idx]
+    fun getCell(x: Int, y: Int) = getCell(Coord(x, y).toIndex())
     fun isValidValueForCell(cell: SudokuCell, value: Int): Boolean {
-        return cell.neighbours
-                .map { nIdx -> getCell(nIdx) }
-                .none { neighbour -> neighbour.value == value }
+        return !neighbourValues(cell).contains(value)
     }
 
     fun firstEmptyCell(): SudokuCell? {
         return grid.firstOrNull { it.value == 0 }
     }
 
+    fun neighbourValues(cell: SudokuCell): Set<Int> {
+        return cell.neighbours.map { getCell(it).value }.toSet()
+    }
+
     fun nextEmptyCell(cell: SudokuCell): SudokuCell? {
         return cell.idx.until(grid.size).map { getCell(it) }.firstOrNull { it.value == 0 }
+    }
+    fun isPerfect(): Boolean {
+        return grid.none { it.isEmpty() } && grid.none { neighbourValues(it).contains(it.value) }
     }
 
     override fun toString(): String {
