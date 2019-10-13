@@ -30,6 +30,10 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
         }
     }
 
+    fun isValid(): Boolean {
+        return grid.all { it.value == 0 || !it.neighbours.contains(it.value) }
+    }
+
     fun logState() {
         logger.debug(this.toString())
     }

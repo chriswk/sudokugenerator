@@ -38,20 +38,52 @@ class SudokuGridTest : StringSpec() {
                 }
             }
         }
-        "Too small values should cause verify to fail" {
-            assertAll(Gen.negativeIntegers()) { value ->
-                assertFailsWith<IllegalArgumentException>("Only valid values is 0 (to signify empty) to 9") {
-                    SudokuGrid.of(IntArray(81) { idx -> value })
-                }
+        "A fully empty grid is a valid grid" {
+            SudokuGrid.emptyGrid().isValid() shouldBe true
+        }
+
+        "Two identical non-empty values in same row should cause grid to not be valid" {
+            assertAll(Gen.choose(1, 9)) { v ->
+                val grid = SudokuGrid.of(IntArray(81) { idx ->
+                    if (idx < 2) {
+                        v
+                    } else {
+                        0
+                    }
+                })
+                grid.isValid() shouldBe false
             }
         }
-        "Too large values should cause verification of grid to fail" {
-            assertAll(Gen.choose(10, 100)) { value ->
-                assertFailsWith<IllegalArgumentException>("Only valid values is 0 (to signify empty) to 9") {
-                    SudokuGrid.of(IntArray(81) { idx -> value })
-                }
+        "Two identical non-empty values in same column should cause grid to not be valid" {
+            assertAll(Gen.choose(1, 9)) { v ->
+                val grid = SudokuGrid.of(IntArray(81) { idx ->
+                    if (idx % 9 == 0) {
+                        v
+                    } else {
+                        0
+                    }
+                })
+                grid.isValid() shouldBe false
             }
         }
+        "Two identical values in same box should cause grid to not be valid" {
+            assertAll(Gen.choose(1, 9)) { v ->
+                val grid = SudokuGrid.of(IntArray(81) { idx ->
+                    // |===|
+                    // | v |
+                    // |   |
+                    // |  v|
+                    // |===|
+                    if (idx == 1 || idx == 20) {
+                        v
+                    } else {
+                        0
+                    }
+                })
+                grid.isValid() shouldBe false
+            }
+        }
+
         "Roundtrips should be possible" {
             val grid = SudokuGrid.of(IntArray(81) { idx ->
                 if (idx < 9) {

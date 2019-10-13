@@ -15,8 +15,9 @@ class SudokuSolverTest : StringSpec() {
         "An empty table should find a solution" {
             val grid = IntArray(81) { 0 }
             var solved: IntArray? = null
+            val solver = SudokuSolver()
             val timeTaken = measureTimeMillis {
-                solved = SudokuSolver(grid = grid).solve()
+                solved = solver.solve(grid)
             }
             solved shouldNotBe null
             logger.info("Took $timeTaken ms")
@@ -34,8 +35,9 @@ class SudokuSolverTest : StringSpec() {
                     null
                 }
             }.toList()
+            val solver = SudokuSolver()
             forAll(puzzleToSolution) { (quiz, solution) ->
-                val ourSolution = SudokuSolver(grid = quiz.toIntArray()).solve()
+                val ourSolution = solver.solve(grid = quiz.toIntArray())
                 solution.toIntArray().contentEquals(ourSolution)
             }
         }

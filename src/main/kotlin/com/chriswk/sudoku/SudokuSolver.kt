@@ -1,16 +1,15 @@
 package com.chriswk.sudoku
 
 import io.prometheus.client.Histogram
-import kotlin.random.Random
 
 /** Copied and converted from java https://github.com/mfgravesjr/finished-projects/tree/master/SudokuGridGenerator **/
-class SudokuSolver(val random: Random = Random.Default, val grid: IntArray = IntArray(81) { _ -> 0 }) {
-    fun solve(): IntArray {
+class SudokuSolver() {
+    fun solve(grid: IntArray = IntArray(81) { _ -> 0 }): IntArray {
         val timer = solveTimer.startTimer()
         val arr = (1..9).toMutableList()
         // loads all boxes with numbers 1 through 9
         for (i in 0..80) {
-            if (i % 9 == 0) arr.shuffle(random)
+            if (i % 9 == 0) arr.shuffle()
             val perBox = i / 3 % 3 * 9 + i % 27 / 9 * 3 + i / 27 * 27 + i % 3
             grid[perBox] = arr[i % 9]
         }
