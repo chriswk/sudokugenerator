@@ -21,10 +21,6 @@ data class SudokuCell(
         val boxMaxY = ((coord.y / gridSideSquareRoot) + 1) * gridSideSquareRoot
         return (boxMinX.until(boxMaxX)).flatMap { x -> (boxMinY.until(boxMaxY)).map { y -> Coord(x, y) } }.minus(coord)
     }
-    fun nextCellIdx(): Int? = when (idx >= (gridSide * gridSide - 1)) {
-        true -> null
-        false -> idx + 1
-    }
     fun boxNeighbours(): List<Int> {
         return boxCoords().map { idxFromCoord(it) }
     }

@@ -4,6 +4,7 @@ import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
 import org.slf4j.LoggerFactory
 
+val zeroValue = '0'.toInt()
 class SudokuGrid(val grid: Array<SudokuCell>) {
     companion object {
         val logger = LoggerFactory.getLogger(SudokuGrid::class.java)
@@ -22,10 +23,18 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
             require(grid.size == 81) { "Grid must be of size 81. it was ${grid.size}" }
             require(grid.all { it in 0..9 }) { "Only valid values is 0 (to signify empty) to 9" }
         }
+
+        fun fromString(sudokuString: String): SudokuGrid {
+            require(sudokuString.length == 81) { "A sudoku puzzle is 81 fields" }
+            return of(sudokuString.map { it.toInt() - zeroValue }.toIntArray())
+        }
     }
 
     fun logState() {
         logger.debug(this.toString())
+    }
+    fun toIntArray(): IntArray {
+        return grid.map { it.value }.toIntArray()
     }
 
     fun getCell(idx: Int): SudokuCell = grid[idx]
@@ -44,7 +53,7 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
     }
 
     override fun toString(): String {
-        return GridConverter.toString(this)
+        return grid.joinToString(separator = "") { it.value.toString() }
     }
 }
 

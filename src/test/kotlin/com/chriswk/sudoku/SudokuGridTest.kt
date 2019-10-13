@@ -52,5 +52,21 @@ class SudokuGridTest : StringSpec() {
                 }
             }
         }
+        "Roundtrips should be possible" {
+            val grid = SudokuGrid.of(IntArray(81) { idx ->
+                if (idx < 9) {
+                    idx
+                } else if (idx in 9..17) {
+                    2
+                } else if (idx in 18..26) {
+                    1
+                } else if (idx in 27..36) {
+                    5
+                } else {
+                    0
+                }
+            })
+            SudokuGrid.fromString(grid.toString()).toIntArray().contentEquals(grid.toIntArray())
+        }
     }
 }
