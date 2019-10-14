@@ -10,11 +10,13 @@ class SudokuGenerator(val backtrackingSolver: SudokuSolver = SudokuSolver()) {
         val generateTimer = Histogram.Builder().name("generate_timer").help("time taken to generate a solution").register()
         val puzzleTimer = Histogram.Builder().name("puzzle_timer").help("time taken to generate puzzle").register()
     }
+
     suspend fun generateRandomDifficulty(): SudokuGame {
         val generate = generate(Difficulty.values().random())
         logger.info("Generated $generate")
         return generate
     }
+
     fun generate(difficulty: Difficulty): SudokuGame {
         val numberOfEmptyCells = when (difficulty) {
             Difficulty.VERY_EASY -> Random.nextInt(33, 39)
@@ -32,28 +34,25 @@ class SudokuGenerator(val backtrackingSolver: SudokuSolver = SudokuSolver()) {
         val solution = SudokuSolver().solve(SudokuGrid.emptyGrid())
         val solutionTimeTaken = solutionTimer.observeDuration()
         val puzzleTimeTaker = puzzleTimer.startTimer()
-        val quiz = eraseCells(solution = solution.toIntArray(), numberOfEmptyCells = numberOfEmptyCells)
+        val (quiz, solvedTo) = eraseCells(solution = solution, numberOfEmptyCells = numberOfEmptyCells)
         val puzzleTimeTaken = puzzleTimeTaker.observeDuration()
-        return SudokuGame(solution = solution, puzzle = quiz, difficulty = difficulty, solutionGenerationTime = solutionTimeTaken, puzzleGenerationTime = puzzleTimeTaken)
+        return SudokuGame(solution = solvedTo, puzzle = quiz, difficulty = difficulty, solutionGenerationTime = solutionTimeTaken, puzzleGenerationTime = puzzleTimeTaken)
     }
 
-    fun eraseCells(random: Random = Random.Default, solution: IntArray, numberOfEmptyCells: Int): SudokuGrid {
-        val grid = SudokuGrid.of(solution)
+    fun eraseCells(random: Random = Random.Default, solution: SudokuGrid, numberOfEmptyCells: Int): Pair<SudokuGrid, SudokuGrid> {
+        val grid = SudokuGrid.of(solution.toIntArray())
         var i = 0
         while (i < numberOfEmptyCells) {
             val randomRow = random.nextInt(9)
             val randomColumn = random.nextInt(9)
-
             val cell = grid.getCell(randomRow, randomColumn)
             if (!cell.isEmpty()) {
-                val prevValue = cell.value
                 cell.value = 0
             } else {
                 i--
             }
             i++
         }
-        backtrackingSolver.solve(grid).toIntArray().contentEquals(solution)
-        return grid
+        return (grid to backtrackingSolver.solve(grid))
     }
 }
