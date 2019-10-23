@@ -15,7 +15,8 @@ fun main(args: Array<String>) {
         GlobalScope.launch {
             val generator = SudokuGenerator()
             while (true) {
-                generator.generateRandomDifficulty()
+                val puzzle = generator.generateRandomDifficulty()
+                println(puzzle)
                 delay(TimeUnit.SECONDS.toMillis(1))
             }
         }
