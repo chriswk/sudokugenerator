@@ -15,7 +15,7 @@ fun main(args: Array<String>) = runBlocking {
     }
     val timeToCreate = measureTimeMillis {
         0.until(numberToGenerate).forEach { _ ->
-            val game = generator.generate(Difficulty.MEDIUM)
+            val game = generator.generate(Difficulty.VERY_HARD)
             puzzlesWithSolutions += (game.puzzle.toString() to game.solution.toString())
         }
     }

@@ -1,5 +1,6 @@
 package com.chriswk.sudoku
 
+import com.chriswk.sudoku.dancinglinks.DancingLinksAlgorithm
 import io.kotlintest.forAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
@@ -42,5 +43,23 @@ class SudokuSolverTest : StringSpec() {
                 ourSolution.toString() shouldBe solution.toString()
             }
         }
+        "Dancing links" {
+            val dancingLinksSolver = DancingLinksAlgorithm()
+            val puzzlesWithSolution = SudokuSolverTest::class.java.classLoader.getResource("500sudoku.csv")!!.readText(Charsets.UTF_8).lines().mapNotNull {
+                if (it.contains(',')) {
+                    val (quiz, solution) = it.split(",")
+                    val puzzle = quiz.map { it.toInt() - zeroValue }.chunked(9).map { it.toIntArray() }.toTypedArray()
+                    val solved = solution.map { it.toInt() - zeroValue }.toIntArray()
+                    puzzle to solved
+                } else {
+                    null
+                }
+            }
+            forAll(puzzlesWithSolution) { (quiz, solution) ->
+                val ourSolution = dancingLinksSolver.solve(quiz)
+                ourSolution != null && ourSolution.contentEquals(solution)
+            }
+        }
     }
+    val zeroValue = '0'.toInt()
 }
