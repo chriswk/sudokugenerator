@@ -12,3 +12,4 @@ build
 # Kotlintest
 .kotlintest
 logs
+stale_outputs_checked
