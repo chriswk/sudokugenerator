@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm").version("1.3.71")
+    kotlin("plugin.serialization").version("1.3.71")
     id("com.diffplug.gradle.spotless") version "3.28.1"
     id("com.google.cloud.tools.jib").version("2.1.0")
 }
@@ -12,20 +13,30 @@ repositories {
     mavenCentral()
 }
 
+val ktor_version = "1.3.1"
+val testcontainersVersion = "1.13.0"
+
 dependencies {
     implementation(platform(kotlin("bom")))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0")
+
     implementation("io.prometheus:simpleclient_hotspot:0.8.0")
     implementation("io.prometheus:simpleclient_log4j2:0.8.0")
     // Use the Kotlin JDK 8 standard library.
     implementation(kotlin("stdlib-jdk8"))
-    implementation("io.ktor:ktor-server-core:1.3.1")
-    implementation("io.ktor:ktor-server-netty:1.3.1")
-    implementation("io.ktor:ktor-metrics-micrometer:1.3.1")
+    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
+    implementation("io.ktor:ktor-serialization:$ktor_version")
+    implementation("io.ktor:ktor-jackson:$ktor_version")
+    implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
     implementation("io.micrometer:micrometer-registry-prometheus:1.3.0")
-    implementation("org.logevents:logevents:0.1.22")
-    implementation("org.postgresql:postgresql:42.2.8")
-    implementation("org.flywaydb:flyway-core:6.0.6")
+    implementation("org.logevents:logevents:0.1.29")
+    implementation("org.postgresql:postgresql:42.2.9")
+    implementation("org.flywaydb:flyway-core:6.3.3")
     implementation("com.natpryce:konfig:1.6.10.0")
+    implementation("de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.2.0")
+    implementation("com.zaxxer:HikariCP:3.4.2")
+    implementation("com.github.seratch:kotliquery:1.3.1")
     testImplementation(kotlin("test-junit5"))
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.1")
@@ -33,6 +44,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testImplementation("org.assertj:assertj-core:3.15.0")
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
 }
 
 java {

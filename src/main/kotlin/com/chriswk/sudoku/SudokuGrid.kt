@@ -5,6 +5,7 @@ import java.lang.StringBuilder
 import org.slf4j.LoggerFactory
 
 val zeroValue = '0'.toInt()
+
 class SudokuGrid(val grid: Array<SudokuCell>) {
     companion object {
         val logger = LoggerFactory.getLogger(SudokuGrid::class.java)
@@ -56,7 +57,7 @@ class SudokuGrid(val grid: Array<SudokuCell>) {
     }
 
     fun nextEmptyCell(cell: SudokuCell): SudokuCell? {
-        return cell.idx.until(grid.size).map { getCell(it) }.firstOrNull { it.value == 0 }
+        return cell.idx.until(grid.size).map { getCell(it) }.firstOrNull { it.value == EMPTY }
     }
     fun isPerfect(): Boolean {
         return grid.none { it.isEmpty() } && grid.none { neighbourValues(it).contains(it.value) }

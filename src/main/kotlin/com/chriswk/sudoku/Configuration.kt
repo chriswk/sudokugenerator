@@ -10,26 +10,33 @@ import com.natpryce.konfig.stringType
 
 private val localProperties = ConfigurationMap(
         mapOf(
-                "username" to "sudoku",
-                "password" to "sudoku",
-                "databasename" to "sudokupuzzles",
-                "port" to "8800"
+                "database.username" to "sudoku",
+                "database.password" to "sudoku",
+                "database.url" to "jdbc:postgresql://localhost:5432/sudokupuzzles",
+                "desiredPuzzles" to "1000000",
+                "salt" to "sudokuIsFun",
+                "http.port" to "8800"
         )
 )
 
 private val devProperties = ConfigurationMap(
-        mapOf("databasename" to "sudokupuzzles", "port" to "8800")
+        mapOf("databasename" to "sudokupuzzles", "http.port" to "8800")
 )
 
 private val prodProperties = ConfigurationMap(
-        mapOf("databasename" to "sudokupuzzles", "port" to "8800")
+        mapOf("databasename" to "sudokupuzzles", "http.port" to "8800")
+)
+data class Database(
+    val username: String = config()[Key("database.username", stringType)],
+    val password: String = config()[Key("database.password", stringType)],
+    val url: String = config()[Key("database.url", stringType)]
 )
 
 data class Application(
-    val httpPort: Int = config()[Key("port", intType)],
-    val username: String = config()[Key("username", stringType)],
-    val password: String = config()[Key("password", stringType)],
-    val databaseName: String = config()[Key("databasename", stringType)]
+    val httpPort: Int = config()[Key("http.port", intType)],
+    val database: Database = Database(),
+    val desiredPuzzles: Int = config()[Key("desiredPuzzles", intType)],
+    val salt: String = config()[Key("salt", stringType)]
 )
 
 fun getEnvOrProp(propName: String): String? {

@@ -32,7 +32,7 @@ class SudokuGenerator(val backtrackingSolver: SudokuSolver = SudokuSolver()) {
 
     fun findDifficulty(quiz: SudokuGrid): Difficulty {
         val remaining = quiz.toIntArray().count { it != 0 }
-        return when(remaining) {
+        return when (remaining) {
             in 17..19 -> Difficulty.DIABOLICAL
             in 20..22 -> Difficulty.VERY_HARD
             in 23..26 -> Difficulty.HARD
