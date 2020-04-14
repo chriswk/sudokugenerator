@@ -27,7 +27,7 @@ class SudokuGenerator(val backtrackingSolver: SudokuSolver = SudokuSolver()) {
             Difficulty.VERY_HARD -> Random.nextInt(total - 22, total - 20)
             Difficulty.DIABOLICAL -> Random.nextInt(total - 19, total - 17)
         }
-        return generate(numberOfEmptyCells, difficulty)
+        return generate(numberOfEmptyCells)
     }
 
     fun findDifficulty(quiz: SudokuGrid): Difficulty {
@@ -42,7 +42,7 @@ class SudokuGenerator(val backtrackingSolver: SudokuSolver = SudokuSolver()) {
         }
     }
 
-    fun generate(numberOfEmptyCells: Int, difficulty: Difficulty): SudokuGame {
+    fun generate(numberOfEmptyCells: Int): SudokuGame {
         val solutionTimer = generateTimer.startTimer()
         val solution = SudokuSolver().solve(SudokuGrid.emptyGrid())
         val solutionTimeTaken = solutionTimer.observeDuration()

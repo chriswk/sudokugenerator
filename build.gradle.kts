@@ -1,11 +1,12 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm").version("1.3.71")
     kotlin("plugin.serialization").version("1.3.71")
     id("com.diffplug.gradle.spotless") version "3.28.1"
-    id("com.google.cloud.tools.jib").version("2.1.0")
+    id("com.hpe.kraal") version "0.0.15" // kraal version - for makeRelease.sh
 }
 
 repositories {
@@ -64,7 +65,14 @@ tasks.withType<Test> {
     }
 }
 
-tasks.withType<KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs += listOf("-Xuse-experimental=kotlin.Experimental", "-progressive")
+        // disable -Werror with: ./gradlew -PwarningsAsErrors=false
+        allWarningsAsErrors = project.findProperty("warningsAsErrors") != "false"
+        jvmTarget = "1.8"
+    }
+}
 
 spotless {
     kotlin {
@@ -85,4 +93,21 @@ tasks.named("compileKotlin") {
 }
 tasks.named("spotlessCheck") {
     dependsOn("spotlessApply")
+}
+
+val fatjar by tasks.creating(Jar::class) {
+    from(kraal.outputZipTrees) {
+        exclude("META-INF/*.SF")
+        exclude("META-INF/*.DSA")
+        exclude("META-INF/*.RSA")
+    }
+
+    manifest {
+        attributes("Main-Class" to "com.chriswk.sudoku.AppKt")
+    }
+    destinationDirectory.set(project.buildDir.resolve("fatjar"))
+    archiveFileName.set("sudoku-backend.jar")
+}
+tasks.named("assemble") {
+    dependsOn(fatjar)
 }

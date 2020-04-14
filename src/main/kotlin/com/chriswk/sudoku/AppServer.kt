@@ -44,7 +44,7 @@ object AppServer {
             }
             install(CallLogging)
             install(StatusPages) {
-                exception<IllegalArgumentException> { e ->
+                exception<IllegalArgumentException> { _ ->
                     call.respond(HttpStatusCode.BadRequest)
                 }
             }

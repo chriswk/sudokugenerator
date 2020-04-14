@@ -1,0 +1,1 @@
+web: java build/fatjar/sudoku-backend.jar

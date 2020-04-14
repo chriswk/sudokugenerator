@@ -24,8 +24,8 @@ class DancingLinksAlgorithm {
         return coverBoard
     }
 
-    private fun checkSubsectionConstraint(coverBoard: Array<BooleanArray>, hBase: Int): Int {
-        var hBase = hBase
+    private fun checkSubsectionConstraint(coverBoard: Array<BooleanArray>, hB: Int): Int {
+        var hBase = hB
         var row = COVER_START_INDEX
         while (row <= BOARD_SIZE) {
             var column = COVER_START_INDEX
@@ -48,8 +48,8 @@ class DancingLinksAlgorithm {
         return hBase
     }
 
-    private fun checkColumnConstraint(coverBoard: Array<BooleanArray>, hBase: Int): Int {
-        var hBase = hBase
+    private fun checkColumnConstraint(coverBoard: Array<BooleanArray>, hB: Int): Int {
+        var hBase = hB
         for (column in COVER_START_INDEX..BOARD_SIZE) {
             var n = COVER_START_INDEX
             while (n <= BOARD_SIZE) {
@@ -64,8 +64,8 @@ class DancingLinksAlgorithm {
         return hBase
     }
 
-    private fun checkRowConstraint(coverBoard: Array<BooleanArray>, hBase: Int): Int {
-        var hBase = hBase
+    private fun checkRowConstraint(coverBoard: Array<BooleanArray>, hB: Int): Int {
+        var hBase = hB
         for (row in COVER_START_INDEX..BOARD_SIZE) {
             var n = COVER_START_INDEX
             while (n <= BOARD_SIZE) {
@@ -80,8 +80,8 @@ class DancingLinksAlgorithm {
         return hBase
     }
 
-    private fun checkCellConstraint(coverBoard: Array<BooleanArray>, hBase: Int): Int {
-        var hBase = hBase
+    private fun checkCellConstraint(coverBoard: Array<BooleanArray>, hB: Int): Int {
+        var hBase = hB
         for (row in COVER_START_INDEX..BOARD_SIZE) {
             var column = COVER_START_INDEX
             while (column <= BOARD_SIZE) {

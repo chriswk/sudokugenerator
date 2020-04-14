@@ -17,9 +17,9 @@ val mainLogger = LoggerFactory.getLogger("com.chriswk.sudoku.AppKt")
 val puzzlecount = Counter.build("number_of_puzzles_generated", "Puzzles generated since startup").register()
 fun main(args: Array<String>) {
     val config = Application()
-    val flyway = Flyway.configure().dataSource(config.database.url, config.database.username, config.database.password).load()
-    flyway.migrate()
     val dataSource = getHikariConfig(config)
+    val flyway = Flyway.configure().dataSource(dataSource).load()
+    flyway.migrate()
     val hashIds = Hashids(salt = config.salt)
     val sudokuStore = PostgresSudokuStore(dataSource = dataSource, hashId = hashIds)
     runBlocking {
@@ -38,9 +38,9 @@ fun main(args: Array<String>) {
 
 fun getHikariConfig(app: Application): DataSource {
     val config = HikariConfig()
-    config.jdbcUrl = app.database.url
-    config.username = app.database.username
-    config.password = app.database.password
+    config.jdbcUrl = app.database.cleanUrl()
+    config.username = app.database.username()
+    config.password = app.database.password()
     config.minimumIdle = 1
     config.maximumPoolSize = 5
     return HikariDataSource(config)

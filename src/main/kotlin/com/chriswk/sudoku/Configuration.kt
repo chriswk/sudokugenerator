@@ -10,9 +10,7 @@ import com.natpryce.konfig.stringType
 
 private val localProperties = ConfigurationMap(
         mapOf(
-                "database.username" to "sudoku",
-                "database.password" to "sudoku",
-                "database.url" to "jdbc:postgresql://localhost:5432/sudokupuzzles",
+                "database.url" to "jdbc:postgresql://sudoku:sudoku@localhost:5432/sudokupuzzles",
                 "desiredPuzzles" to "1000000",
                 "salt" to "sudokuIsFun",
                 "http.port" to "8800"
@@ -27,10 +25,22 @@ private val prodProperties = ConfigurationMap(
         mapOf("databasename" to "sudokupuzzles", "http.port" to "8800")
 )
 data class Database(
-    val username: String = config()[Key("database.username", stringType)],
-    val password: String = config()[Key("database.password", stringType)],
     val url: String = config()[Key("database.url", stringType)]
-)
+) {
+    fun password(): String {
+        return url.substringBefore("@").substringAfterLast(":")
+    }
+    fun username(): String {
+        return url.substringBefore("@").substringBeforeLast(":").substringAfterLast("/")
+    }
+    fun cleanUrl(): String {
+        if (url.startsWith("jdbc:")) {
+            return url.substringBeforeLast("@").substringBeforeLast("/") + "/" + url.substringAfterLast("@")
+        } else {
+            return "jdbc:" + url.substringBeforeLast("@").substringBeforeLast("/") + url.substringAfterLast("@")
+        }
+    }
+}
 
 data class Application(
     val httpPort: Int = config()[Key("http.port", intType)],
