@@ -37,7 +37,7 @@ data class Database(
         if (url.startsWith("jdbc:")) {
             return url.substringBeforeLast("@").substringBeforeLast("/") + "/" + url.substringAfterLast("@")
         } else {
-            return "jdbc:" + url.substringBeforeLast("@").substringBeforeLast("/") + "/" + url.substringAfterLast("@")
+            return "jdbc:" + url.substringBeforeLast("@").substringBeforeLast("/").replace("postgres:", "psotgresql:") + "/" + url.substringAfterLast("@")
         }
     }
 }

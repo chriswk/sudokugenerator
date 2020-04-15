@@ -36,7 +36,6 @@ internal fun withMigratedDb(test: () -> Unit) =
 internal fun clean(dataSource: HikariDataSource) = Flyway.configure().dataSource(dataSource).load().clean()
 internal fun migrate(dataSource: HikariDataSource) = Flyway.configure().dataSource(dataSource).load().migrate()
 
-@Disabled
 class PostgresSudokuStoreTest {
 
     @Test
