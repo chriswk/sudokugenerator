@@ -1,12 +1,12 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm").version("1.3.71")
     kotlin("plugin.serialization").version("1.3.71")
     id("com.diffplug.gradle.spotless") version "3.28.1"
-    id("com.hpe.kraal") version "0.0.15" // kraal version - for makeRelease.sh
+    application
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 repositories {
@@ -94,25 +94,9 @@ tasks.named("compileKotlin") {
 tasks.named("spotlessCheck") {
     dependsOn("spotlessApply")
 }
-
-val fatjar by tasks.creating(Jar::class) {
-    from(kraal.outputZipTrees) {
-        exclude("META-INF/*.SF")
-        exclude("META-INF/*.DSA")
-        exclude("META-INF/*.RSA")
-    }
-
-    manifest {
-        attributes("Main-Class" to "com.chriswk.sudoku.AppKt")
-    }
-    destinationDirectory.set(project.buildDir.resolve("fatjar"))
-    archiveFileName.set("sudoku-backend.jar")
+application {
+    mainClassName = "com.chriswk.sudoku.AppKt"
 }
-tasks.named("assemble") {
-    dependsOn(fatjar)
-}
-
 val stage by tasks.creating {
-    dependsOn("clean", "assemble")
+    dependsOn("shadowJar")
 }
-
