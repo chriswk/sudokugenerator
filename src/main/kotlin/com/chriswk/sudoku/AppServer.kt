@@ -80,6 +80,14 @@ object AppServer {
                 get("/puzzlecount") {
                     call.respond(sudokuStore.countPuzzles())
                 }
+                get("/random") {
+                    val puzzle = sudokuStore.randomPuzzle()
+                    when(puzzle) {
+                        null -> call.respond(HttpStatusCode.NotFound)
+                        else -> call.respond(puzzle)
+                    }
+                }
+
             }
         }
     }

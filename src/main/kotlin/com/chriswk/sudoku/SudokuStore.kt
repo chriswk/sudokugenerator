@@ -1,12 +1,14 @@
 package com.chriswk.sudoku
 
 import de.huxhorn.sulky.ulid.ULID
-import javax.sql.DataSource
-import kotlin.math.roundToLong
+import kotliquery.Row
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import kotliquery.using
 import org.hashids.Hashids
+import javax.sql.DataSource
+import kotlin.math.roundToLong
+import kotlin.random.Random
 
 interface HealthCheck {
     fun isHealthy(): Boolean
@@ -15,6 +17,7 @@ interface HealthCheck {
 interface SudokuStore : HealthCheck {
     fun save(puzzle: SudokuGame): SudokuDto
     fun get(hash: String): SudokuDto?
+    fun randomPuzzle(): SudokuDto?
     fun countPuzzles(): PuzzleCount
 }
 
@@ -60,14 +63,18 @@ class PostgresSudokuStore(val dataSource: DataSource, val ulid: ULID = ULID(), v
                 queryOf(
                     "SELECT * FROM puzzle WHERE id = :id", mapOf("id" to id.first())
                 ).map {
-                    SudokuDto(
-                        puzzle = it.string("puzzle"),
-                        hash = hashId.encode(it.long("id")),
-                        difficulty = Difficulty.valueOf(it.string("difficulty"))
-                    )
+                    dtoFromRow(it)
                 }.asSingle
             )
         }
+    }
+
+    private fun dtoFromRow(it: Row): SudokuDto {
+        return SudokuDto(
+            puzzle = it.string("puzzle"),
+            hash = hashId.encode(it.long("id")),
+            difficulty = Difficulty.valueOf(it.string("difficulty"))
+        )
     }
 
     override fun countPuzzles(): PuzzleCount {
@@ -79,6 +86,20 @@ class PostgresSudokuStore(val dataSource: DataSource, val ulid: ULID = ULID(), v
                 ).map { PuzzleCount(it.long("count")) }.asSingle
             )
         } ?: PuzzleCount(0L)
+    }
+
+    override fun randomPuzzle(): SudokuDto? {
+        return using(sessionOf(dataSource)) { session ->
+            val maxId = session.run(
+                queryOf("SELECT max(id) FROM puzzle as max", emptyMap()).map { it.long("max") }.asSingle
+            ) ?: 0
+            val randomId = Random.nextLong(0, maxId)
+            session.run(
+                queryOf("SELECT * FROM puzzle where id >= :rnd", mapOf("rnd" to randomId)).map {
+                    dtoFromRow(it)
+                }.asSingle
+            )
+        }
     }
 
     override fun isHealthy(): Boolean {
