@@ -111,3 +111,7 @@ val fatjar by tasks.creating(Jar::class) {
 tasks.named("assemble") {
     dependsOn(fatjar)
 }
+
+val stage by tasks.creating {
+    dependsOn("clean", "assemble")
+}
