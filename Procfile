@@ -1,1 +1,1 @@
-web: java build/fatjar/sudoku-backend.jar
+web: java -jar build/fatjar/sudoku-backend.jar
