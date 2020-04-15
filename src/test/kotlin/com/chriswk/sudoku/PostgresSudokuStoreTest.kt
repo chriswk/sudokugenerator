@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.flywaydb.core.Flyway
 import org.hashids.Hashids
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 
@@ -35,6 +36,7 @@ internal fun withMigratedDb(test: () -> Unit) =
 internal fun clean(dataSource: HikariDataSource) = Flyway.configure().dataSource(dataSource).load().clean()
 internal fun migrate(dataSource: HikariDataSource) = Flyway.configure().dataSource(dataSource).load().migrate()
 
+@Disabled
 class PostgresSudokuStoreTest {
 
     @Test
