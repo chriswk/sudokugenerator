@@ -13,16 +13,16 @@ private val localProperties = ConfigurationMap(
                 "database.url" to "jdbc:postgresql://sudoku:sudoku@localhost:5432/sudokupuzzles",
                 "desiredPuzzles" to "1000000",
                 "salt" to "sudokuIsFun",
-                "http.port" to "8800"
+                "port" to "8800"
         )
 )
 
 private val devProperties = ConfigurationMap(
-        mapOf("databasename" to "sudokupuzzles", "http.port" to "8800")
+        mapOf("databasename" to "sudokupuzzles")
 )
 
 private val prodProperties = ConfigurationMap(
-        mapOf("databasename" to "sudokupuzzles", "http.port" to "8800")
+        mapOf("databasename" to "sudokupuzzles")
 )
 data class Database(
     val url: String = config()[Key("database.url", stringType)]
@@ -43,7 +43,7 @@ data class Database(
 }
 
 data class Application(
-    val httpPort: Int = config()[Key("http.port", intType)],
+    val httpPort: Int = config()[Key("port", intType)],
     val database: Database = Database(),
     val desiredPuzzles: Int = config()[Key("desiredPuzzles", intType)],
     val salt: String = config()[Key("salt", stringType)]
