@@ -1,1 +1,1 @@
-web: java -jar build/fatjar/sudoku-backend.jar
+web: java -DdesieredPuzzles=1000000 -jar build/fatjar/sudoku-backend.jar
